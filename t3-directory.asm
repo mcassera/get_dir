@@ -29,16 +29,16 @@ event:	.dstruct	kernel.event.event_t
 clearBuffer:                                                            ; need to clear 2024 bytes for the buffer
         lda buff                                                        ; using zero pager for indirect y indexing
         sta $c8                                                         ; buff was poked into memory from the basic program
-        lda buff+1                                                      ; pokew after using an alloc() command to secure the memory
+        lda buff+1                                                      
         sta $c9
-        ldx #$09                                                        ; we're going to use eight loops of 255 bytes.
+        ldx #$09                                                        ; we're going to use eight loops of 256 bytes.
 loopx:
         ldy #$00                                                        ; we need to clear the memory because we'll be looking for
         lda #$00                                                        ; $00 as a file separator
 loopy:
         sta ($c8),y                                                     ; index y from 0 to 255
         iny
-        bne loopy                                                       ; no, keep looping Y
+        bne loopy                                                       ; not zero, keep looping Y
                                                            
         inc $c9                                                         ; yes - so now we need to add $100 to our zero page indirect addres (inc hi byte)
 
@@ -106,7 +106,7 @@ _getFile:
         rts
 
 _getFree:
-        bra _nextRead                                                   ; we're not pulling from memory with out free event, but we still nee to do another 
+        bra _nextRead                                                   ; we're not pulling from memory with out free event, but we still need to do another 
         rts                                                             ; directory read call
 
 _eof:   
